@@ -33,6 +33,8 @@ export default function Locate(){
     }, [])
 
     useEffect(() => {
+        
+        const markers = [];
 
         function initMap() {
             const directionsService = new google.maps.DirectionsService();
@@ -44,17 +46,33 @@ export default function Locate(){
                 center: positions.origin,
             });
             
-            Object.entries(positions)
-            .flatMap(t => t)
-            .filter(t => typeof t !== 'string')
-            .map((pos, index) => {
-                new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    icon: !index ? "https://img.chibykes.dev/siren.png" : "https://img.chibykes.dev/ambulance.png",
-                });
-            })
+            originalMarkers(markers, map);
 
+            showHospitals(map, markers, infowindow);
+
+            directionsRenderer.setMap(map);
+            calculateAndDisplayRoute(directionsService, directionsRenderer);          
+            
+        }
+
+        const removeMarkers = () => {
+            markers.map((marker) => marker.setMap(null));
+        }
+        
+        function originalMarkers(markers, map) {
+            Object.entries(positions)
+                .flatMap(t => t)
+                .filter(t => typeof t !== 'string')
+                .map((pos, index) => {
+                    markers.push(new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        icon: !index ? "https://img.chibykes.dev/siren.png" : "https://img.chibykes.dev/ambulance.png",
+                    }));
+                });
+        }
+
+        function showHospitals(map, markers, infowindow) {
             var request = {
                 location: positions.origin,
                 radius: 2000,
@@ -62,39 +80,37 @@ export default function Locate(){
             };
 
             function createMarker(place) {
-                if (!place.geometry || !place.geometry.location) return;
-              
+                if (!place.geometry || !place.geometry.location)
+                    return;
+
                 const marker = new google.maps.Marker({
-                  map,
-                  position: place.geometry.location,
-                  icon: 'https://img.chibykes.dev/hospital.png'
+                    map,
+                    position: place.geometry.location,
+                    icon: 'https://img.chibykes.dev/hospital.png'
                 });
-              
+
+                markers.push(marker);
+
                 google.maps.event.addListener(marker, "click", () => {
-                  infowindow.setContent(place.name || "");
-                  infowindow.open(map);
+                    infowindow.setContent(place.name || "");
+                    infowindow.open(map);
                 });
             }
 
             let callback = (results, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK && results) {
                     for (let i = 0; i < results.length; i++) {
-                      createMarker(results[i]);
+                        createMarker(results[i]);
                     }
-              
-                    // console.log(results)
+
                     map.setCenter(positions.origin);
-                  }
-            }
-            
+                }
+            };
+
             var service = new google.maps.places.PlacesService(map);
             service.nearbySearch(request, (callback));
-
-            directionsRenderer.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsRenderer);          
-            
         }
-        
+
         function calculateAndDisplayRoute(directionsService, directionsRenderer) {
         directionsService
             .route({
@@ -113,20 +129,18 @@ export default function Locate(){
         }
 
         window.initMap = initMap;
-
-    },[positions])
-
-    useEffect(() => {
+        initMap();
+        
 
         fetch(`${window.origin}/api/resolve-location?origin=${positions.origin.lat},${positions.origin.lng}&destination=${positions.destination.lat},${positions.destination.lng}`)
         .then(res => res.json())
         .then(data => setDetails({
             ambulance_location: data.destination_addresses[0],
-            duration: data.rows[0].elements[0].duration.text,
-            distance: (data.rows[0].elements[0].distance.value/1000) + ' km'
+            duration: data.rows[0].elements[0].duration?.text,
+            distance: (data.rows[0].elements[0].distance?.value/1000) + ' km'
         }));
 
-    },[positions])
+    },[positions]);
 
     const locate = () => {
         const options = {

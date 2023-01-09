@@ -1,0 +1,13 @@
+{
+    "theme_color": "#1cb558",
+    "background_color": "#000000",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "Unipay",
+    "short_name": "Unipay",
+    "description": "Pay university bills with seamless transfers",
+    "icons": {
+        "name": "Screenshot (9).png"
+    }
+}

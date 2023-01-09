@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+@keyframes loading {
+
+  0% { transform: translateY(0); opacity: 0.5; }
+  25% { transform: translateY(-5px); opacity: 1; }
+  50% { transform: translateY(0); opacity: 0.5; }
+  75% { transform: translateY(0); opacity: 0.5; }
+  100% { transform: translateY(0); opacity: 0.5; }
+  
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Poppins;
+  background: #F9F9F9;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.loading{
+  animation: loading 1200ms infinite linear;
+  animation-delay: calc(var(--delay) * 300ms);
+}
+
+.gmnoprint.gm-bundled-control.gm-bundled-control-on-bottom{
+  display: none;
+}
+
+.gmnoprint[role="menubar"]{
+  display: none;
+}
+
+
+
+

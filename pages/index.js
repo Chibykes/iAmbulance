@@ -12,7 +12,9 @@ export default function Index(){
     
     const simulateSearch = () => {
         setFindAmbulance(true);
-        router.push('/find-ambulance')
+        setTimeout(()=>{
+            router.push('/find-ambulance')
+        }, 3000);
     }
 
     const emergencies = [

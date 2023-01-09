@@ -190,7 +190,7 @@ export default function Locate(){
                     </div>
                 </div>
 
-                <div className='w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</div>
+                <Link href="/" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
 
             </div>
 

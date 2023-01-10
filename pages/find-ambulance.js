@@ -163,10 +163,12 @@ export default function Locate(){
     
     useEffect(() => {
         
-        let data = JSON.parse(router.query.driver);
-        setPositions({...positions, destination: data?.location})
-        setDriver(data);
-
+        if(Object.entries(router.query).length > 0){
+            const { driver } = router.query;
+            setPositions({...positions, destination: JSON.parse(driver)?.location})
+            setDriver(JSON.parse(driver));
+        }
+        
     }, [router])
 
     return(

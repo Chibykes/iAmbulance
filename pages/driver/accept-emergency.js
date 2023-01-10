@@ -148,12 +148,16 @@ export default function Locate(){
     }, []);
 
     useEffect(() => {
-
-        console.log(router.query.emergency);
-        setPositions({...positions, destination: JSON.parse(router.query.emergency)?.location})
-        io('https://sockets-vt.herokuapp.com').emit('accept-emergency', JSON.parse(router.query.driver))
+        
+        if(Object.entries(router.query).length > 0){
+            const { emergency, driver } = router.query;
+            setPositions({...positions, destination: JSON.parse(emergency).location});
+            io('https://sockets-vt.herokuapp.com').emit('accept-emergency', JSON.parse(driver));
+        }
 
     }, [router])
+
+    // useEffect(() => console.log(router), [router])
 
     const socketInitializer = async () => {
         socket = io('https://sockets-vt.herokuapp.com');

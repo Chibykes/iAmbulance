@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
 import { use, useEffect, useLayoutEffect, useState } from 'react';
@@ -7,8 +8,8 @@ import { MdCall } from 'react-icons/md'
 export default function Locate(){
 
     const [positions, setPositions] = useState({
-        origin: {lat: 4.8472226, lng: 6.974604},
-        destination: {lat: 4.9472226, lng: 7.074604},
+        origin: {lat: 5.4728797, lng: 7.5457689},
+        destination: {lat: 5.463688, lng: 7.500665},
     })
     const [details, setDetails] = useState({});
 
@@ -157,6 +158,27 @@ export default function Locate(){
 
             <div className="bg-white space-y-4 absolute bottom-0 left-0 w-full min-h-[40vh] rounded-t-3xl shadow-2xl p-8">
                 <p className='text-sm font-bold'>Ambulance details</p>
+
+                <div className='flex justify-between text-xs'>
+                    <div className='flex items-center gap-2'>
+                        <div className='relative w-4 h-4'>
+                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/siren.png" fill />
+                        </div>
+                        <p className='font-bold'>You</p>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='relative w-4 h-4'>
+                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/ambulance.png" fill />
+                        </div>
+                        <p className='font-bold'>Ambulance</p>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <div className='relative w-4 h-4'>
+                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/hospital.png" fill />
+                        </div>
+                        <p className='font-bold'>Hospitals</p>
+                    </div>
+                </div>
 
                 <div className=''>
                     <p className='text-sm'>John Michael</p>

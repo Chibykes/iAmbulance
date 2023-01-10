@@ -3,18 +3,57 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { GiAmbulance } from 'react-icons/gi';
+import io from 'socket.io-client';
+let socket;
 
 export default function Index(){
 
-    const [emergency, setEmergency] = useState('');
+    const [emergency, setEmergency] = useState({
+        category: "",
+        location: {}
+    });
+
     const router = useRouter();
     const [findAmbulance, setFindAmbulance] = useState(false);
     
     const simulateSearch = () => {
+        socket.emit('emergency', emergency);
         setFindAmbulance(true);
-        setTimeout(()=>{
-            router.push('/find-ambulance')
-        }, 3000);
+    }
+
+    useEffect(() => {
+
+        socketInitializer();
+
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
+        
+        function success({coords: { latitude: lat, longitude: lng }}) {
+            setEmergency({ ...emergency, location: {lat, lng}});
+        }
+        
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+        
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+    }, []);
+
+    const socketInitializer = async () => {
+        await fetch('/api/socket');
+        socket = io();
+    
+        socket.on('connect', () => {
+          console.log('socket client connected');
+        })
+
+        socket.on('accept-emergency', (data) => {
+            router.push(`/find-ambulance?driver=${JSON.stringify(data)}`);
+        })
     }
 
     const emergencies = [
@@ -45,8 +84,8 @@ export default function Index(){
                 <div className='grid grid-cols-2 lg:grid-cols-3 gap-4'>
                     {emergencies.map(({type, img}, index) => (
                         <div key={index} 
-                            onClick={() => setEmergency(type)}
-                            className={`${emergency === type ? 'bg-red-500 text-white border-red-500 ring-2 ring-red-300 ring-offset-2' : 'border-neutral-300'} flex flex-col items-center justify-center gap-2 p-4 border-2 rounded-md`}>
+                            onClick={() => setEmergency({...emergency, category: type})}
+                            className={`${emergency.category === type ? 'bg-red-500 text-white border-red-500 ring-2 ring-red-300 ring-offset-2' : 'border-neutral-300'} flex flex-col items-center justify-center gap-2 p-4 border-2 rounded-md`}>
                             <div className='relative w-3/4 h-16'>
                                 <Image style={{objectFit: 'contain'}} src={img} fill />
                             </div>

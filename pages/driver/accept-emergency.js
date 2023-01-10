@@ -9,7 +9,6 @@ let socket;
 export default function Locate(){
 
     const router = useRouter();
-    const [driver, setDriver] = useState({});
     const [positions, setPositions] = useState({
         origin: {lat: 5.463688, lng: 7.500665},
         destination: {lat: 5.521593, lng: 7.4938994},
@@ -55,7 +54,7 @@ export default function Locate(){
                     markers.push(new google.maps.Marker({
                         position: pos,
                         map: map,
-                        icon: !index ? "https://img.chibykes.dev/siren.png" : "https://img.chibykes.dev/ambulance.png",
+                        icon: index ? "https://img.chibykes.dev/siren.png" : "https://img.chibykes.dev/ambulance.png",
                     }));
                 });
         }
@@ -148,6 +147,14 @@ export default function Locate(){
 
     }, []);
 
+    useEffect(() => {
+
+        console.log(router.query.emergency);
+        setPositions({...positions, destination: JSON.parse(router.query.emergency)?.location})
+        io().emit('accept-emergency', JSON.parse(router.query.driver))
+
+    }, [router])
+
     const socketInitializer = async () => {
         await fetch('/api/socket');
         socket = io();
@@ -155,20 +162,7 @@ export default function Locate(){
         socket.on('connect', () => {
           console.log('socket client connected');
         })
-
-        socket.on('accept-emergency', (data) => {
-            setPositions({...positions, destination: data.location});
-            setDriver(data);
-        })
     }
-    
-    useEffect(() => {
-        
-        let data = JSON.parse(router.query.driver);
-        setPositions({...positions, destination: data?.location})
-        setDriver(data);
-
-    }, [router])
 
     return(
         <main className="relative space-y-6 max-w-md mx-auto w-screen min-h-screen flex flex-col justify-between">
@@ -176,20 +170,20 @@ export default function Locate(){
             <div id="map" className='absolute h-[65vh] w-full top-0 left-0'></div>
 
             <div className="bg-white space-y-4 absolute bottom-0 left-0 w-full min-h-[40vh] rounded-t-3xl shadow-2xl p-8">
-                <p className='text-sm font-bold'>Ambulance details</p>
+                <p className='text-sm font-bold'>Emergency details</p>
 
                 <div className='flex justify-between text-xs'>
                     <div className='flex items-center gap-2'>
                         <div className='relative w-4 h-4'>
-                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/siren.png" fill />
+                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/ambulance.png" fill />
                         </div>
                         <p className='font-bold'>You</p>
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='relative w-4 h-4'>
-                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/ambulance.png" fill />
+                            <Image style={{objectFit: 'contain'}} src="https://img.chibykes.dev/siren.png" fill />
                         </div>
-                        <p className='font-bold'>Ambulance</p>
+                        <p className='font-bold'>Emergency</p>
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='relative w-4 h-4'>
@@ -200,14 +194,14 @@ export default function Locate(){
                 </div>
 
                 <div className=''>
-                    <p className='text-sm'>{driver?.name}</p>
-                    <p className='text-[.625rem] text-red-500 font-semibold'>Driver</p>
+                    <p className='text-sm'>???</p>
+                    <p className='text-[.625rem] text-red-500 font-semibold'>Patient</p>
                 </div>
 
                 <div className=''>
                     <p className='flex justify-between text-sm'>
-                        {driver?.phone}
-                        <Link href={`tel:${driver?.phone}`} className='grid place-content-center w-6 h-6 bg-red-500 rounded-full hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent'>
+                        ???
+                        <Link href="tel:???" className='grid place-content-center w-6 h-6 bg-red-500 rounded-full hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent'>
                             <MdCall className="text-white font-bold" />
                         </Link>
                     </p>
@@ -230,7 +224,7 @@ export default function Locate(){
                     </div>
                 </div>
 
-                <Link href="/" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
+                {/* <Link href="/" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link> */}
                 {/* <div className="" id="reload-map" onClick={() => { } } >Crack</div> */}
             </div>
         </main>

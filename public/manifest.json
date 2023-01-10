@@ -1,5 +1,5 @@
 {
-    "theme_color": "#1cb558",
+    "theme_color": "#f05252",
     "background_color": "#000000",
     "display": "standalone",
     "scope": "/",
@@ -7,7 +7,11 @@
     "name": "iAmbulance",
     "short_name": "iAmbulance",
     "description": "",
-    "icons": {
-        "name": "Screenshot (9).png"
-    }
+    "icons": [
+        {
+            "src": "/img/ambulance.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        }
+    ]
 }

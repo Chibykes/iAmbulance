@@ -1,15 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Script from 'next/script';
-import { use, useEffect, useLayoutEffect, useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import { MdCall } from 'react-icons/md'
 
 export default function Locate(){
 
     const [positions, setPositions] = useState({
-        origin: {lat: 5.4728797, lng: 7.5457689},
-        destination: {lat: 5.463688, lng: 7.500665},
+        origin: {lat: 5.463688, lng: 7.500665},
+        destination: {lat: 5.521593, lng: 7.4938994},
     })
     const [details, setDetails] = useState({});
 
@@ -97,15 +95,6 @@ export default function Locate(){
         }
 
         function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-            console.log({
-                origin: {
-                    query: `${positions.origin.lat},${positions.origin.lng}`,
-                },
-                destination: {
-                    query: `${positions.destination.lat},${positions.destination.lng}`,
-                },
-                travelMode: google.maps.TravelMode.DRIVING,
-                })
         directionsService
             .route({
             origin: {
@@ -211,7 +200,7 @@ export default function Locate(){
                     </div>
                 </div>
 
-                <Link href="#" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
+                <Link href="/" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
                 <div className="hidden" id="reload-map" onClick={() => window.initMap()} ></div>
             </div>
         </main>

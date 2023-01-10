@@ -2,14 +2,14 @@
     "theme_color": "#f05252",
     "background_color": "#000000",
     "display": "standalone",
-    "scope": "/",
-    "start_url": "/",
-    "name": "iAmbulance",
-    "short_name": "iAmbulance",
+    "scope": "/driver",
+    "start_url": "/driver",
+    "name": "iAmbulance Driver",
+    "short_name": "iAmbulance Driver",
     "description": "",
     "icons": [
         {
-            "src": "/img/ambulance.png",
+            "src": "/img/siren.png",
             "type": "image/png",
             "sizes": "256x256"
         }

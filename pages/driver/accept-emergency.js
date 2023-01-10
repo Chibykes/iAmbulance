@@ -155,6 +155,10 @@ export default function Locate(){
             io('https://sockets-vt.herokuapp.com').emit('accept-emergency', JSON.parse(driver));
         }
 
+        return () => {
+            io('https://sockets-vt.herokuapp.com').disconnect();
+        }
+
     }, [router])
 
     // useEffect(() => console.log(router), [router])

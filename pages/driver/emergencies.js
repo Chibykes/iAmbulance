@@ -46,7 +46,6 @@ export default function Locate(){
         })
 
         socket.on('emergency', (data) => {
-            console.log({emergencies});
             fetch(`/api/geodecode?latlng=${Object.values(data.location).join(',')}`)
             .then(res => res.json())
             .then(resp => setEmergencies([...emergencies, {

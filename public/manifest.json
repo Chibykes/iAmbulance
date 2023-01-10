@@ -4,9 +4,9 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "Unipay",
-    "short_name": "Unipay",
-    "description": "Pay university bills with seamless transfers",
+    "name": "iAmbulance",
+    "short_name": "iAmbulance",
+    "description": "",
     "icons": {
         "name": "Screenshot (9).png"
     }

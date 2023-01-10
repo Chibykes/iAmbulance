@@ -16,28 +16,27 @@ export default function Locate(){
         
         const markers = [];
         
-        if(!window.initMap){
-            function initMap() {
-                const directionsService = new google.maps.DirectionsService();
-                const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-                const infowindow = new google.maps.InfoWindow();
-    
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 7,
-                    center: positions.origin,
-                });
-                
-                originalMarkers(markers, map);
-    
-                showHospitals(map, markers, infowindow);
-    
-                directionsRenderer.setMap(map);
-                calculateAndDisplayRoute(directionsService, directionsRenderer);
-                
-            }
-    
-            window.initMap = initMap;
-        } else { window.initMap(); }
+        function initMap() {
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+            const infowindow = new google.maps.InfoWindow();
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 7,
+                center: positions.origin,
+            });
+            
+            originalMarkers(markers, map);
+
+            showHospitals(map, markers, infowindow);
+
+            directionsRenderer.setMap(map);
+            calculateAndDisplayRoute(directionsService, directionsRenderer);
+            
+        }
+
+        window.initMap = initMap;
+        initMap();
         
 
         function removeMarkers(){
@@ -97,6 +96,15 @@ export default function Locate(){
         }
 
         function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+            console.log({
+                origin: {
+                    query: `${positions.origin.lat},${positions.origin.lng}`,
+                },
+                destination: {
+                    query: `${positions.destination.lat},${positions.destination.lng}`,
+                },
+                travelMode: google.maps.TravelMode.DRIVING,
+                })
         directionsService
             .route({
             origin: {
@@ -188,6 +196,7 @@ export default function Locate(){
 
             <Script
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcOlKeHv8hUrp3ipcQ_vODkMLSaBKZ2YQ&callback=initMap&v=weekly&libraries=places"
+                strategy='beforeInteractive'
             />
         </main>
     );

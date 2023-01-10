@@ -151,13 +151,12 @@ export default function Locate(){
 
         console.log(router.query.emergency);
         setPositions({...positions, destination: JSON.parse(router.query.emergency)?.location})
-        io().emit('accept-emergency', JSON.parse(router.query.driver))
+        io('https://sockets-vt.herokuapp.com').emit('accept-emergency', JSON.parse(router.query.driver))
 
     }, [router])
 
     const socketInitializer = async () => {
-        await fetch('/api/socket');
-        socket = io();
+        socket = io('https://sockets-vt.herokuapp.com');
     
         socket.on('connect', () => {
           console.log('socket client connected');

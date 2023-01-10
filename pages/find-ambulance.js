@@ -149,8 +149,7 @@ export default function Locate(){
     }, []);
 
     const socketInitializer = async () => {
-        await fetch('/api/socket');
-        socket = io();
+        socket = io('https://sockets-vt.herokuapp.com');
     
         socket.on('connect', () => {
           console.log('socket client connected');

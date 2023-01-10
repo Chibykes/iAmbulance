@@ -12,30 +12,32 @@ export default function Locate(){
     })
     const [details, setDetails] = useState({});
 
-    const loadMap = () => {
+    useEffect(() => {
         
         const markers = [];
         
-        function initMap() {
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-            const infowindow = new google.maps.InfoWindow();
-
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 7,
-                center: positions.origin,
-            });
-            
-            originalMarkers(markers, map);
-
-            showHospitals(map, markers, infowindow);
-
-            directionsRenderer.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsRenderer);
-            
-        }
-
-        window.initMap = initMap;
+        if(!window.initMap){
+            function initMap() {
+                const directionsService = new google.maps.DirectionsService();
+                const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+                const infowindow = new google.maps.InfoWindow();
+    
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 7,
+                    center: positions.origin,
+                });
+                
+                originalMarkers(markers, map);
+    
+                showHospitals(map, markers, infowindow);
+    
+                directionsRenderer.setMap(map);
+                calculateAndDisplayRoute(directionsService, directionsRenderer);
+                
+            }
+    
+            window.initMap = initMap;
+        } else { window.initMap(); }
         
 
         function removeMarkers(){
@@ -119,7 +121,7 @@ export default function Locate(){
             distance: (data.rows[0].elements[0].distance?.value/1000) + ' km'
         }));
 
-    }
+    },[positions]);
 
     useEffect(() => {
         const options = {
@@ -130,7 +132,6 @@ export default function Locate(){
         
         function success({coords: { latitude: lat, longitude: lng }}) {
             setPositions({ ...positions, origin: {lat, lng}});
-            loadMap();
         }
         
         function error(err) {

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useLayoutEffect, useState } from 'react';
 
 import { MdCall } from 'react-icons/md'
 
@@ -12,30 +12,10 @@ export default function Locate(){
     })
     const [details, setDetails] = useState({});
 
-    useEffect(() => {
-        const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        };
-        
-        function success({coords: { latitude: lat, longitude: lng }}) {
-            setPositions({ ...positions, origin: {lat, lng}});
-            // window.alert(JSON.stringify({lat, lng}));
-        }
-        
-        function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-        }
-        
-        navigator.geolocation.getCurrentPosition(success, error, options);
-
-    }, [])
-
-    useEffect(() => {
+    const loadMap = () => {
         
         const markers = [];
-
+        
         function initMap() {
             const directionsService = new google.maps.DirectionsService();
             const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
@@ -51,11 +31,14 @@ export default function Locate(){
             showHospitals(map, markers, infowindow);
 
             directionsRenderer.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsRenderer);          
+            calculateAndDisplayRoute(directionsService, directionsRenderer);
             
         }
 
-        const removeMarkers = () => {
+        window.initMap = initMap;
+        
+
+        function removeMarkers(){
             markers.map((marker) => marker.setMap(null));
         }
         
@@ -128,10 +111,6 @@ export default function Locate(){
             .catch((e) => console.log(e));
         }
 
-        window.initMap = initMap;
-        initMap();
-        
-
         fetch(`${window.origin}/api/resolve-location?origin=${positions.origin.lat},${positions.origin.lng}&destination=${positions.destination.lat},${positions.destination.lng}`)
         .then(res => res.json())
         .then(data => setDetails({
@@ -140,30 +119,27 @@ export default function Locate(){
             distance: (data.rows[0].elements[0].distance?.value/1000) + ' km'
         }));
 
-    },[positions]);
+    }
 
-    const locate = () => {
+    useEffect(() => {
         const options = {
             enableHighAccuracy: true,
             timeout: 5000,
             maximumAge: 0
-          };
-          
-          function success(pos) {
-            const crd = pos.coords;
-          
-            console.log('Your current position is:');
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);
-          }
-          
-          function error(err) {
+        };
+        
+        function success({coords: { latitude: lat, longitude: lng }}) {
+            setPositions({ ...positions, origin: {lat, lng}});
+            loadMap();
+        }
+        
+        function error(err) {
             console.warn(`ERROR(${err.code}): ${err.message}`);
-          }
-          
-          navigator.geolocation.getCurrentPosition(success, error, options);
-    }
+        }
+        
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+    }, []);
 
     return(
         <main className="relative space-y-6 max-w-md mx-auto w-screen min-h-screen flex flex-col justify-between">
@@ -204,8 +180,8 @@ export default function Locate(){
                     </div>
                 </div>
 
-                <Link href="/" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
-
+                <Link href="#" className='block w-1/2 mx-auto first-line:hover:ring-red-500 hover:bg-red-500 ring-offset-2 ring-2 ring-transparent py-2 text-white text-center uppercase text-sm font-bold bg-red-500 cursor-pointer rounded-full'>Cancel</Link>
+                <div className="hidden" id="reload-map" onClick={() => window.initMap()} ></div>
             </div>
 
 
